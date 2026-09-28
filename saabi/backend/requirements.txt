@@ -1,7 +1,0 @@
-fastapi
-uvicorn[standard]
-pydantic
-anthropic
-google-generativeai
-httpx
-python-dotenv
