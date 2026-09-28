@@ -48,7 +48,6 @@ dev_dependencies:
   riverpod_generator: ^2.4.3
   custom_lint: ^0.6.7
 riverpod_lint: ^2.3.13
-
 flutter:
   uses-material-design: true
 
