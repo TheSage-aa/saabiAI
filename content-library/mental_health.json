@@ -1,0 +1,45 @@
+{
+  "topic": "mental_health",
+  "entries": [
+    {
+      "question_patterns": ["what be mental health?", "abeg explain mental health", "is mental health same as madness?"],
+      "answer": "Mental health refers to your emotional and psychological well-being—how you think, feel, and act. It is not 'madness'. Everyone has mental health, just like physical health, and it's normal to have good days and bad days.",
+      "sources": ["WHO 2023", "Mentally Aware Nigeria Initiative 2022"]
+    },
+    {
+      "question_patterns": ["what is depression?", "signs of anxiety", "common mental health conditions"],
+      "answer": "Depression involves feeling extremely sad or hopeless for a long time and losing interest in things you used to enjoy. Anxiety is feeling constantly worried or fearful about everyday situations. Both are real medical conditions that can be treated.",
+      "sources": ["WHO 2023", "NACA Nigeria 2022"]
+    },
+    {
+      "question_patterns": ["how to know if I have mental health issue?", "signs of mental illness", "my mind no settle"],
+      "answer": "Signs that you might need help include feeling sad for weeks, withdrawing from friends, eating or sleeping too much or too little, or having constant severe worries. If your feelings are making it hard to go to school, work, or live normally, it's time to speak up.",
+      "sources": ["WHO 2023", "Mentally Aware Nigeria Initiative 2023"]
+    },
+    {
+      "question_patterns": ["why people dey hide mental health?", "stigma around mental health in Nigeria", "they say na spiritual attack"],
+      "answer": "In Nigeria, there is often stigma around mental health because people wrongly believe it's caused by spiritual attacks or personal weakness. This is false. Mental health issues are medical conditions, and talking about them openly helps people get the right care.",
+      "sources": ["Mentally Aware Nigeria Initiative 2022", "WHO 2023"]
+    },
+    {
+      "question_patterns": ["how I fit cope with stress?", "coping strategies for mental health", "what to do when I am stressed"],
+      "answer": "Healthy ways to cope with stress include talking to someone you trust, getting enough sleep, exercising, and doing things you enjoy. Avoid using alcohol or drugs to numb your feelings, as they can make the situation much worse in the long run.",
+      "sources": ["WHO 2023", "UNFPA 2022"]
+    },
+    {
+      "question_patterns": ["when I should see a doctor for mental health?", "when to seek help", "I want give up"],
+      "answer": "You should seek help if your sad or anxious feelings last for more than two weeks, or if they stop you from functioning daily. If you ever have thoughts of hurting yourself or giving up on life, please reach out to a professional or a helpline immediately.",
+      "sources": ["WHO 2023", "Mentally Aware Nigeria Initiative 2023"]
+    },
+    {
+      "question_patterns": ["difference between sadness and depression", "how depression differ from feeling sad?", "I dey sad"],
+      "answer": "Sadness is a normal human emotion that passes after a few days, usually linked to a specific event. Depression is a medical condition where the deep sadness or emptiness lasts for weeks or months, and it affects your sleep, appetite, and energy.",
+      "sources": ["WHO 2023", "Mentally Aware Nigeria Initiative 2022"]
+    },
+    {
+      "question_patterns": ["where I fit get support for mental health?", "support systems", "who to talk to about my mental health"],
+      "answer": "You can talk to a trusted friend, family member, or counselor. In Nigeria, you can also reach out to organizations like Mentally Aware Nigeria Initiative (MANI) or Asido Foundation for free, confidential mental health support and counseling.",
+      "sources": ["Mentally Aware Nigeria Initiative 2023", "WHO 2023"]
+    }
+  ]
+}

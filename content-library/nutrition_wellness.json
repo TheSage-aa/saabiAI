@@ -1,0 +1,45 @@
+{
+  "topic": "nutrition_wellness",
+  "entries": [
+    {
+      "question_patterns": ["what is balanced diet?", "how to eat healthy", "what should I eat?"],
+      "answer": "A balanced diet gives your body the nutrients it needs to function correctly. It includes a mix of carbohydrates (like rice or yam), proteins (like beans or fish), healthy fats, and lots of fruits and vegetables. Eating a variety of foods keeps your body strong.",
+      "sources": ["WHO 2023", "Federal Ministry of Health Nigeria 2022"]
+    },
+    {
+      "question_patterns": ["why food important for HIV?", "nutrition for PLHIV", "what should HIV positive person eat?"],
+      "answer": "Good nutrition is extra important for people living with HIV because the virus burns a lot of energy and can affect the immune system. Eating well helps your body absorb ARV drugs better, maintain a healthy weight, and fight off other infections.",
+      "sources": ["WHO 2023", "NACA Nigeria 2023"]
+    },
+    {
+      "question_patterns": ["which food dey boost immune system?", "immune boosting foods", "foods to make me strong"],
+      "answer": "Foods rich in vitamins and minerals help boost your immune system. In Nigeria, you can eat local fruits like oranges, pawpaw, and mangoes, along with dark leafy greens like ugu, spinach, and bitter leaf. Proteins like beans, eggs, and fish are also excellent.",
+      "sources": ["WHO 2023", "NACA Nigeria 2022"]
+    },
+    {
+      "question_patterns": ["why I must drink water?", "importance of hydration", "how much water to drink"],
+      "answer": "Drinking enough clean water is vital because it helps your body flush out toxins, aids digestion, and keeps your skin healthy. It also helps medications process better in your body. Try to drink at least 8 glasses of safe, clean water every day.",
+      "sources": ["WHO 2023", "UNICEF 2022"]
+    },
+    {
+      "question_patterns": ["why sleep important?", "sleep and health", "I no dey sleep well"],
+      "answer": "Getting enough sleep allows your body and mind to rest, repair, and recharge. Poor sleep can weaken your immune system and make you feel stressed or sick. Try to get 7 to 8 hours of good sleep every night to stay healthy.",
+      "sources": ["WHO 2023", "UNFPA 2022"]
+    },
+    {
+      "question_patterns": ["how exercise dey help?", "exercise basics", "do I need to go to gym?"],
+      "answer": "Regular exercise keeps your heart strong, builds muscle, and improves your mood by releasing happy hormones. You don't need a gym; walking, dancing, jogging, or doing chores at home for about 30 minutes a day is enough to stay fit.",
+      "sources": ["WHO 2023", "Federal Ministry of Health Nigeria 2022"]
+    },
+    {
+      "question_patterns": ["can I drink alcohol with ARV?", "smoking and HIV", "avoiding substance abuse"],
+      "answer": "It is best to limit or avoid alcohol and smoking, especially if you are on HIV medication. Alcohol can interfere with how your ARVs work and damage your liver, while smoking severely weakens your lungs and overall immune system.",
+      "sources": ["WHO 2023", "NACA Nigeria 2023"]
+    },
+    {
+      "question_patterns": ["how to eat well with no money?", "nutrition on a budget in Nigeria", "cheap healthy food"],
+      "answer": "Eating healthy does not have to be expensive. You can buy affordable local foods in season, like beans, groundnuts, soya beans, sweet potatoes, and local vegetables. These are cheaper than processed foods and pack much more nutrition.",
+      "sources": ["NACA Nigeria 2023", "Federal Ministry of Health Nigeria 2022"]
+    }
+  ]
+}

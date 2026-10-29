@@ -1,0 +1,45 @@
+{
+  "topic": "stigma_rights",
+  "entries": [
+    {
+      "question_patterns": ["what is HIV stigma?", "meaning of stigma", "why people dey treat HIV patients bad?"],
+      "answer": "HIV stigma refers to negative beliefs, feelings, and attitudes towards people living with HIV. It happens mostly because of ignorance and fear about how the virus is spread. Stigma is harmful because it discourages people from getting tested or taking their medication.",
+      "sources": ["UNAIDS 2023", "NACA Nigeria 2023"]
+    },
+    {
+      "question_patterns": ["how stigma dey affect people?", "effects of HIV stigma", "stigma and mental health"],
+      "answer": "Stigma can make people living with HIV feel ashamed, isolated, and depressed. It can cause them to hide their status, stop taking their daily ARVs, or avoid going to the hospital, which ultimately damages their health and spreads the virus further.",
+      "sources": ["WHO 2023", "UNAIDS 2023"]
+    },
+    {
+      "question_patterns": ["what be my rights if I have HIV?", "HIV rights in Nigeria", "Anti-Discrimination Act 2014"],
+      "answer": "In Nigeria, the HIV/AIDS Anti-Discrimination Act of 2014 protects your rights. It is illegal for anyone to sack you, deny you admission, or refuse you medical treatment just because of your HIV status. You have the right to equal treatment and privacy.",
+      "sources": ["NACA Nigeria 2023", "UNAIDS 2022"]
+    },
+    {
+      "question_patterns": ["must I tell people my HIV status?", "disclosure decisions", "who should I tell I have HIV?"],
+      "answer": "Your HIV status is private, and you do not have to broadcast it to everyone. However, it is very important to disclose your status to your sexual partners so you can protect them, and to your healthcare providers so they can give you the right medical care.",
+      "sources": ["WHO 2023", "NACA Nigeria 2023"]
+    },
+    {
+      "question_patterns": ["what to do if they discriminate against me?", "how to respond to HIV discrimination", "they sack me because of HIV"],
+      "answer": "If you face discrimination at work, school, or a hospital because of your status, you can report it. You have the right to seek legal help. Organizations like the National Agency for the Control of AIDS (NACA) and local human rights NGOs can support you in fighting for justice.",
+      "sources": ["NACA Nigeria 2023", "UNAIDS 2023"]
+    },
+    {
+      "question_patterns": ["where I fit find support group?", "community support resources", "I feel alone with my HIV"],
+      "answer": "You are not alone. There are many support groups where you can meet other people living with HIV, share experiences, and get encouragement. Ask your treatment center for connections to local support groups or youth-friendly centers in your area.",
+      "sources": ["NACA Nigeria 2023", "PEPFAR 2023"]
+    },
+    {
+      "question_patterns": ["what is NEPWHAN?", "PLHIV networks in Nigeria", "association for people with HIV"],
+      "answer": "NEPWHAN is the Network of People Living with HIV/AIDS in Nigeria. It is a large organization that advocates for the rights of people living with HIV, provides peer support, and works to ensure everyone has access to free treatment and care across the country.",
+      "sources": ["NEPWHAN 2023", "NACA Nigeria 2022"]
+    },
+    {
+      "question_patterns": ["how I fit stop stigma?", "how to fight HIV stigma", "what can I do about stigma?"],
+      "answer": "You can help stop stigma by educating yourself and sharing facts about HIV with your friends and family. Challenge false rumors when you hear them, use respectful language, and show love and support to people living with HIV.",
+      "sources": ["UNAIDS 2023", "WHO 2023"]
+    }
+  ]
+}
