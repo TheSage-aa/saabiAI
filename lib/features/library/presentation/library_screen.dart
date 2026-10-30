@@ -2,53 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/services/user_progress_service.dart';
+import '../../../core/widgets/shared_widgets.dart';
 import '../data/library_repository.dart';
+import '../domain/topic.dart';
+
+final _topicsProvider = FutureProvider<List<Topic>>((ref) {
+  return ref.watch(libraryRepositoryProvider).getTopics();
+});
 
 class LibraryScreen extends ConsumerWidget {
   const LibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final progress = ref.watch(userProgressProvider);
+    final topicsAsync = ref.watch(_topicsProvider);
+    final w = MediaQuery.of(context).size.width;
+    final crossAxisCount = w >= 1100 ? 4 : (w >= 700 ? 3 : 2);
 
     return Scaffold(
       backgroundColor: SaabiColors.background,
       appBar: AppBar(
+        title: const Text('Learn & Explore'),
         backgroundColor: SaabiColors.background,
-        elevation: 0,
-        title: Text('Learn',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: SaabiColors.textPrimary,
-                )),
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 820),
-          child: ListView(
-            padding: const EdgeInsets.symmetric(
-                horizontal: SaabiSpacing.lg, vertical: SaabiSpacing.sm),
-            children: [
-              Text(
-                '${progress.lessonsCompletedCount} lessons completed · Level ${progress.level}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: SaabiColors.textSecondary,
-                      fontWeight: FontWeight.w600,
+          constraints: const BoxConstraints(maxWidth: 1080),
+          child: topicsAsync.when(
+            loading: () => const SaabiLoadingIndicator(),
+            error: (e, _) => SaabiErrorBanner(
+              message: 'Could not load topics. Check your connection.',
+              onRetry: () => ref.invalidate(_topicsProvider),
+            ),
+            data: (topics) => topics.isEmpty
+                ? const SaabiEmptyState(
+                    icon: Icons.school_outlined,
+                    message: 'No topics available yet.\nCheck back soon!',
+                  )
+                : GridView.builder(
+                    padding: const EdgeInsets.all(SaabiSpacing.lg),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: SaabiSpacing.md,
+                      mainAxisSpacing: SaabiSpacing.md,
+                      childAspectRatio: w >= 700 ? 1.1 : 0.95,
                     ),
-              ),
-              const SizedBox(height: SaabiSpacing.lg),
-              ...LibraryRepository.topics.map((topic) => Padding(
-                    padding: const EdgeInsets.only(bottom: SaabiSpacing.md),
-                    child: _TopicCard(
-                      topic: topic,
-                      completedCount: topic.lessons
-                          .where((l) => progress.isLessonCompleted(l.id))
-                          .length,
-                      onTap: () => context.go('/learn/${topic.id}'),
-                    ),
-                  )),
-            ],
+                    itemCount: topics.length,
+                    itemBuilder: (_, i) => _TopicCard(topic: topics[i]),
+                  ),
           ),
         ),
       ),
@@ -57,65 +58,84 @@ class LibraryScreen extends ConsumerWidget {
 }
 
 class _TopicCard extends StatelessWidget {
-  const _TopicCard({
-    required this.topic,
-    required this.completedCount,
-    required this.onTap,
-  });
+  const _TopicCard({required this.topic});
+  final Topic topic;
 
-  final dynamic topic;
-  final int completedCount;
-  final VoidCallback onTap;
+  Color get _cardColor {
+    if (topic.colorHex == null) return SaabiColors.primary;
+    try {
+      return Color(int.parse(topic.colorHex!.replaceFirst('#', '0xFF')));
+    } catch (_) {
+      return SaabiColors.primary;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () => context.go('/learn/${topic.id}'),
       borderRadius: BorderRadius.circular(SaabiRadius.xl),
       child: Container(
-        padding: const EdgeInsets.all(SaabiSpacing.lg),
         decoration: BoxDecoration(
           color: SaabiColors.surface,
           borderRadius: BorderRadius.circular(SaabiRadius.xl),
-          border: Border.all(color: const Color(0xFFE5E7EB)),
+          border: Border.all(color: _cardColor.withOpacity(0.25), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            )
+          ],
         ),
-        child: Row(
+        padding: const EdgeInsets.all(SaabiSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(color: topic.color, shape: BoxShape.circle),
-              child: Center(
-                child: Text(topic.emoji, style: const TextStyle(fontSize: 26)),
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: _cardColor.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(SaabiRadius.md),
               ),
+              child: Icon(Icons.menu_book_rounded, color: _cardColor, size: 26),
             ),
-            const SizedBox(width: SaabiSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(topic.title as String,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 2),
-                  Text(topic.description as String,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: SaabiColors.textSecondary,
-                          )),
-                  const SizedBox(height: SaabiSpacing.xs),
-                  Text(
-                    '$completedCount / ${(topic.lessons as List).length} lessons done',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: SaabiColors.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
+            const Spacer(),
+            Text(
+              topic.title,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: SaabiColors.textPrimary,
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
-              ),
+              maxLines: 2,
             ),
-            const Icon(Icons.chevron_right, color: SaabiColors.textHint),
+            if (topic.description != null) ...[
+              const SizedBox(height: SaabiSpacing.xs),
+              Text(
+                topic.description!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: SaabiColors.textSecondary,
+                    ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+            const SizedBox(height: SaabiSpacing.sm),
+            Row(
+              children: [
+                Text(
+                  'Start Learning',
+                  style: TextStyle(
+                    color: _cardColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(Icons.arrow_forward_rounded, color: _cardColor, size: 14),
+              ],
+            ),
           ],
         ),
       ),

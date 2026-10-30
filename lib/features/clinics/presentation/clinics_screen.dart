@@ -1,174 +1,202 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/widgets/shared_widgets.dart';
+import '../data/clinics_repository.dart';
+import '../domain/clinic.dart';
 
-/// NOTE: `lib/features/profile/presentation/profile_screen.dart` already
-/// linked to `/profile/clinics`, but no clinic/resource directory data
-/// exists anywhere in this Drive project -- the brief lists "existing
-/// clinic and resource data" as one of the things to get from Adebare
-/// before this ships for real. This is scaffolding with a handful of
-/// clearly-placeholder entries so the route works and the UI pattern is
-/// set; swap `placeholderClinics` for the real, maintained directory
-/// before launch. Do not treat the entries below as verified.
-class Clinic {
-  const Clinic({
-    required this.id,
-    required this.name,
-    required this.city,
-    required this.state,
-    required this.services,
-    required this.youthFriendly,
-  });
+final _searchQueryProvider = StateProvider<String>((ref) => '');
+final _selectedStateProvider = StateProvider<String?>((ref) => null);
 
-  final String id;
-  final String name;
-  final String city;
-  final String state;
-  final List<String> services;
-  final bool youthFriendly;
-}
+final _clinicsProvider = FutureProvider<List<Clinic>>((ref) {
+  return ref.watch(clinicsRepositoryProvider).getClinics();
+});
 
-const placeholderClinics = <Clinic>[
-  Clinic(
-    id: 'placeholder-1',
-    name: '[Placeholder] Community Health Center',
-    city: 'Lagos',
-    state: 'Lagos',
-    services: ['HIV testing', 'Family planning', 'Counseling'],
-    youthFriendly: true,
-  ),
-  Clinic(
-    id: 'placeholder-2',
-    name: '[Placeholder] Youth Friendly Clinic',
-    city: 'Ibadan',
-    state: 'Oyo',
-    services: ['HIV testing', 'STI treatment'],
-    youthFriendly: true,
-  ),
-  Clinic(
-    id: 'placeholder-3',
-    name: '[Placeholder] Primary Health Centre',
-    city: 'Abuja',
-    state: 'FCT',
-    services: ['General health', 'Mental health referral'],
-    youthFriendly: true,
-  ),
-];
-
-class ClinicsScreen extends StatefulWidget {
+class ClinicsScreen extends ConsumerWidget {
   const ClinicsScreen({super.key});
 
   @override
-  State<ClinicsScreen> createState() => _ClinicsScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final clinicsAsync = ref.watch(_clinicsProvider);
+    final query = ref.watch(_searchQueryProvider);
+    final selectedState = ref.watch(_selectedStateProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Find Care')),
+      body: clinicsAsync.when(
+        loading: () => const SaabiLoadingIndicator(),
+        error: (e, _) => SaabiErrorBanner(
+          message: 'Could not load clinics. Check your connection.',
+          onRetry: () => ref.invalidate(_clinicsProvider),
+        ),
+        data: (clinics) {
+          // Client-side filtering — single fetch saves data
+          final states = clinics
+              .where((c) => c.state != null)
+              .map((c) => c.state!)
+              .toSet()
+              .toList()
+            ..sort();
+
+          final filtered = clinics.where((c) {
+            final matchesQuery = query.isEmpty ||
+                c.name.toLowerCase().contains(query.toLowerCase()) ||
+                (c.state?.toLowerCase().contains(query.toLowerCase()) ?? false);
+            final matchesState =
+                selectedState == null || c.state == selectedState;
+            return matchesQuery && matchesState;
+          }).toList();
+
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 860),
+              child: Column(
+                children: [
+                  _SearchBar(
+                    onChanged: (v) =>
+                        ref.read(_searchQueryProvider.notifier).state = v,
+                  ),
+                  _StateFilterChips(
+                    states: states,
+                    selected: selectedState,
+                    onSelect: (s) =>
+                        ref.read(_selectedStateProvider.notifier).state = s,
+                  ),
+                  Expanded(
+                    child: filtered.isEmpty
+                        ? const SaabiEmptyState(
+                            icon: Icons.location_off_outlined,
+                            message: 'No clinics found.\nTry a different search.',
+                          )
+                        : ListView.separated(
+                            padding: const EdgeInsets.all(SaabiSpacing.md),
+                            itemCount: filtered.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: SaabiSpacing.sm),
+                            itemBuilder: (_, i) => _ClinicCard(clinic: filtered[i]),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 }
 
-class _ClinicsScreenState extends State<ClinicsScreen> {
-  final _searchCtrl = TextEditingController();
-  String _query = '';
-
-  @override
-  void dispose() {
-    _searchCtrl.dispose();
-    super.dispose();
-  }
+class _SearchBar extends StatelessWidget {
+  const _SearchBar({required this.onChanged});
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final results = placeholderClinics.where((c) {
-      if (_query.isEmpty) return true;
-      final q = _query.toLowerCase();
-      return c.name.toLowerCase().contains(q) ||
-          c.city.toLowerCase().contains(q) ||
-          c.state.toLowerCase().contains(q);
-    }).toList();
-
-    return Scaffold(
-      backgroundColor: SaabiColors.background,
-      appBar: AppBar(
-        backgroundColor: SaabiColors.background,
-        elevation: 0,
-        title: const Text('Find Care & Clinics'),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+          SaabiSpacing.md, SaabiSpacing.md, SaabiSpacing.md, 0),
+      child: TextField(
+        onChanged: onChanged,
+        decoration: const InputDecoration(
+          hintText: 'Search clinics or state...',
+          prefixIcon: Icon(Icons.search),
+        ),
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 720),
-          child: Padding(
-            padding: const EdgeInsets.all(SaabiSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(SaabiSpacing.md),
-                  decoration: BoxDecoration(
-                    color: SaabiColors.disclaimerBg,
-                    borderRadius: BorderRadius.circular(SaabiRadius.md),
+    );
+  }
+}
+
+class _StateFilterChips extends StatelessWidget {
+  const _StateFilterChips({
+    required this.states,
+    required this.selected,
+    required this.onSelect,
+  });
+  final List<String> states;
+  final String? selected;
+  final ValueChanged<String?> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 48,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(
+            horizontal: SaabiSpacing.md, vertical: SaabiSpacing.xs),
+        children: [
+          FilterChip(
+            label: const Text('All states'),
+            selected: selected == null,
+            onSelected: (_) => onSelect(null),
+          ),
+          ...states.map((s) => Padding(
+                padding: const EdgeInsets.only(left: SaabiSpacing.sm),
+                child: FilterChip(
+                  label: Text(s),
+                  selected: selected == s,
+                  onSelected: (_) => onSelect(selected == s ? null : s),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+class _ClinicCard extends StatelessWidget {
+  const _ClinicCard({required this.clinic});
+  final Clinic clinic;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: () => context.go('/clinics/${clinic.id}'),
+        borderRadius: BorderRadius.circular(SaabiRadius.lg),
+        child: Padding(
+          padding: const EdgeInsets.all(SaabiSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(clinic.name,
+                        style: Theme.of(context).textTheme.titleMedium),
                   ),
-                  child: Text(
-                    'This directory is a placeholder while the real, verified clinic list is put together. '
-                    'Please confirm details directly with a facility before visiting.',
+                  if (clinic.isConfidential == true)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: SaabiColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(SaabiRadius.full),
+                      ),
+                      child: const Text('Confidential',
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: SaabiColors.primary,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                ],
+              ),
+              const SizedBox(height: SaabiSpacing.xs),
+              if (clinic.state != null || clinic.type != null)
+                Text(
+                  [clinic.type, clinic.state].whereType<String>().join(' · '),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              if (clinic.costDescription != null) ...[
+                const SizedBox(height: SaabiSpacing.xs),
+                Text('Cost: ${clinic.costDescription}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: SaabiColors.disclaimerText,
-                        ),
-                  ),
-                ),
-                const SizedBox(height: SaabiSpacing.md),
-                TextField(
-                  controller: _searchCtrl,
-                  onChanged: (v) => setState(() => _query = v),
-                  decoration: const InputDecoration(
-                    hintText: 'Search by city or state...',
-                    prefixIcon: Icon(Icons.search, size: 20),
-                  ),
-                ),
-                const SizedBox(height: SaabiSpacing.md),
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: results.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: SaabiSpacing.sm),
-                    itemBuilder: (_, i) {
-                      final clinic = results[i];
-                      return InkWell(
-                        onTap: () => context.go('/profile/clinics/${clinic.id}'),
-                        borderRadius: BorderRadius.circular(SaabiRadius.lg),
-                        child: Container(
-                          padding: const EdgeInsets.all(SaabiSpacing.md),
-                          decoration: BoxDecoration(
-                            color: SaabiColors.surface,
-                            borderRadius: BorderRadius.circular(SaabiRadius.lg),
-                            border: Border.all(color: const Color(0xFFE5E7EB)),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.local_hospital_outlined,
-                                  color: SaabiColors.primary),
-                              const SizedBox(width: SaabiSpacing.md),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(clinic.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleSmall
-                                            ?.copyWith(fontWeight: FontWeight.w700)),
-                                    Text('${clinic.city}, ${clinic.state}',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(color: SaabiColors.textSecondary)),
-                                  ],
-                                ),
-                              ),
-                              const Icon(Icons.chevron_right, color: SaabiColors.textHint),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                          color: SaabiColors.success,
+                          fontWeight: FontWeight.w600,
+                        )),
               ],
-            ),
+            ],
           ),
         ),
       ),

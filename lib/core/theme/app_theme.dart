@@ -1,178 +1,242 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-/// Saabi's design-system colors.
-///
-/// NOTE: This file did not exist anywhere in the project when this review
-/// was done -- `lib/main.dart`, `lib/navigation/app_router.dart`, and every
-/// screen under `lib/features/` imported `core/theme/app_theme.dart` and
-/// referenced `SaabiColors` / `SaabiSpacing` / `SaabiRadius` / `SaabiTheme`,
-/// but none of it was ever defined, so the app could not compile. These
-/// values were reconstructed from how the existing screens already use
-/// them (hex literals like `Color(0xFFE5E7EB)` scattered through
-/// home_screen.dart, profile_screen.dart, etc.) so the whole app reads as
-/// one consistent system instead of introducing a second, different look.
+/// Saabi colour palette — extracted from Figma design.
 abstract class SaabiColors {
-  // Brand
-  static const primary = Color(0xFF4F46E5);
-  static const primaryLight = Color(0xFFEEF2FF);
+  // Primary brand — deep navy blue (buttons, active nav, headers)
+  static const primary = Color(0xFF1B3A8C);
+  static const primaryLight = Color(0xFF3D52A0);
+  static const primaryDark = Color(0xFF102465);
 
-  // Surfaces
-  static const background = Color(0xFFF9FAFB);
+  // Green — success states, completed lessons, level badge
+  static const green = Color(0xFF4CAF50);
+  static const greenLight = Color(0xFFE8F5E9);
+
+  // Orange — streaks, fire emoji accent
+  static const orange = Color(0xFFFF9800);
+  static const orangeLight = Color(0xFFFFF3E0);
+
+  // Gold / Accent — XP stars, awards
+  static const gold = Color(0xFFF5A623);
+  static const goldLight = Color(0xFFFFF8E1);
+  static const accent = gold;
+
+  // Background — very light blue-grey (screens bg)
+  static const background = Color(0xFFF0F2F8);
+
+  // Surface — pure white (cards, inputs)
   static const surface = Color(0xFFFFFFFF);
+  static const surfaceVariant = Color(0xFFF5F5F5);
 
   // Text
-  static const textPrimary = Color(0xFF111827);
+  static const textPrimary = Color(0xFF1A1A3E);
   static const textSecondary = Color(0xFF6B7280);
   static const textHint = Color(0xFF9CA3AF);
 
-  // Status
-  static const error = Color(0xFFDC2626);
-  static const green = Color(0xFF10B981);
-  static const greenLight = Color(0xFFD1FAE5);
-  static const gold = Color(0xFFF59E0B);
-  static const goldLight = Color(0xFFFEF3C7);
-  static const orangeLight = Color(0xFFFFEDD5);
+  // Semantic
+  static const success = Color(0xFF4CAF50);
+  static const error = Color(0xFFEF4444);
+  static const warning = Color(0xFFF59E0B);
+  static const info = Color(0xFF3B82F6);
 
-  // Topic accents (home screen topic grid / icons)
-  static const topicHiv = Color(0xFFFCE7E7);
-  static const topicReproductive = Color(0xFFDCFCE7);
-  static const topicMentalHealth = Color(0xFFEDE9FE);
-  static const topicNutrition = Color(0xFFD1FAE5);
-
-  // Chat screen
-  static const disclaimerBg = Color(0xFFFFFBEB);
-  static const disclaimerText = Color(0xFF92400E);
-  static const userBubble = Color(0xFF4F46E5);
+  // Chat bubbles
+  static const userBubble = Color(0xFF1B3A8C);
   static const userBubbleText = Color(0xFFFFFFFF);
   static const aiBubble = Color(0xFFF3F4F6);
-  static const aiBubbleText = Color(0xFF111827);
+  static const aiBubbleText = Color(0xFF1A1A3E);
+
+  // Disclaimer banner
+  static const disclaimerBg = Color(0xFFFEF9C3);
+  static const disclaimerText = Color(0xFF78716C);
+
+  // Topic category pastel backgrounds
+  static const topicHiv = Color(0xFFFFE4E6);         // pink
+  static const topicHivIcon = Color(0xFFEF4444);
+  static const topicReproductive = Color(0xFFDBEAFE); // blue
+  static const topicReproductiveIcon = Color(0xFF3B82F6);
+  static const topicMentalHealth = Color(0xFFEDE9FE);  // purple
+  static const topicMentalHealthIcon = Color(0xFF8B5CF6);
+  static const topicNutrition = Color(0xFFD1FAE5);    // green
+  static const topicNutritionIcon = Color(0xFF10B981);
+  static const topicDefault = Color(0xFFE0E7FF);
+  static const topicDefaultIcon = Color(0xFF6366F1);
 }
 
-/// Spacing scale used throughout the app instead of magic numbers.
+/// Spacing scale
 abstract class SaabiSpacing {
-  static const xs = 4.0;
-  static const sm = 8.0;
-  static const md = 16.0;
-  static const lg = 24.0;
-  static const xl = 32.0;
-  static const xxl = 48.0;
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 16;
+  static const double lg = 24;
+  static const double xl = 32;
+  static const double xxl = 48;
 }
 
-/// Corner-radius scale.
+/// Border radii
 abstract class SaabiRadius {
-  static const sm = 8.0;
-  static const md = 12.0;
-  static const lg = 16.0;
-  static const xl = 20.0;
-  static const xxl = 28.0;
-  static const full = 999.0;
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 20;
+  static const double xxl = 28;
+  static const double full = 100;
 }
 
-/// The app's single `ThemeData`. Built once and reused by `MaterialApp`.
-abstract class SaabiTheme {
+/// The app's MaterialTheme based on the Figma design.
+class SaabiTheme {
+  SaabiTheme._();
+
   static ThemeData get light {
-    final base = ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: SaabiColors.primary,
-        brightness: Brightness.light,
-        primary: SaabiColors.primary,
-        surface: SaabiColors.surface,
-        error: SaabiColors.error,
-      ),
-      scaffoldBackgroundColor: SaabiColors.background,
-      fontFamily: GoogleFonts.inter().fontFamily,
+    const colorScheme = ColorScheme(
+      brightness: Brightness.light,
+      primary: SaabiColors.primary,
+      onPrimary: Colors.white,
+      primaryContainer: Color(0xFFDDE3F8),
+      onPrimaryContainer: SaabiColors.primaryDark,
+      secondary: SaabiColors.green,
+      onSecondary: Colors.white,
+      secondaryContainer: SaabiColors.greenLight,
+      onSecondaryContainer: Color(0xFF1B5E20),
+      error: SaabiColors.error,
+      onError: Colors.white,
+      surface: SaabiColors.surface,
+      onSurface: SaabiColors.textPrimary,
+      surfaceContainerHighest: SaabiColors.surfaceVariant,
+      onSurfaceVariant: SaabiColors.textSecondary,
+      outline: Color(0xFFE5E7EB),
     );
 
-    return base.copyWith(
-      textTheme: GoogleFonts.interTextTheme(base.textTheme).copyWith(
-        headlineLarge: GoogleFonts.inter(
-          fontSize: 28,
-          fontWeight: FontWeight.w800,
-          color: SaabiColors.textPrimary,
-        ),
-        headlineMedium: GoogleFonts.inter(
-          fontSize: 22,
-          fontWeight: FontWeight.w800,
-          color: SaabiColors.textPrimary,
-        ),
-        headlineSmall: GoogleFonts.inter(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: SaabiColors.textPrimary,
-        ),
-        titleLarge: GoogleFonts.inter(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: SaabiColors.textPrimary,
-        ),
-        titleMedium: GoogleFonts.inter(
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          color: SaabiColors.textPrimary,
-        ),
-        titleSmall: GoogleFonts.inter(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: SaabiColors.textPrimary,
-        ),
-        bodyLarge: GoogleFonts.inter(fontSize: 16, color: SaabiColors.textPrimary),
-        bodyMedium: GoogleFonts.inter(fontSize: 14, color: SaabiColors.textPrimary),
-        bodySmall: GoogleFonts.inter(fontSize: 12, color: SaabiColors.textSecondary),
-        labelSmall: GoogleFonts.inter(fontSize: 11, color: SaabiColors.textSecondary),
-      ),
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: SaabiColors.background,
+      fontFamily: 'Nunito',
+      textTheme: _textTheme,
       appBarTheme: const AppBarTheme(
         backgroundColor: SaabiColors.background,
         foregroundColor: SaabiColors.textPrimary,
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: false,
+        titleTextStyle: TextStyle(
+          fontFamily: 'Nunito',
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: SaabiColors.textPrimary,
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: SaabiColors.primary,
           foregroundColor: Colors.white,
-          minimumSize: const Size.fromHeight(52),
-          padding: const EdgeInsets.symmetric(horizontal: SaabiSpacing.lg),
+          minimumSize: const Size(double.infinity, 54),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(SaabiRadius.xxl),
           ),
-          textStyle: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700),
+          textStyle: const TextStyle(
+            fontFamily: 'Nunito',
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+          elevation: 0,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          minimumSize: const Size.fromHeight(52),
+          foregroundColor: SaabiColors.primary,
+          minimumSize: const Size(double.infinity, 54),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(SaabiRadius.xxl),
           ),
+          side: const BorderSide(color: SaabiColors.primary, width: 1.5),
+          textStyle: const TextStyle(
+            fontFamily: 'Nunito',
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
         ),
+      ),
+      cardTheme: CardThemeData(
+        color: SaabiColors.surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(SaabiRadius.xl),
+        ),
+        margin: EdgeInsets.zero,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: SaabiColors.background,
+        fillColor: SaabiColors.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SaabiRadius.xl),
+          borderSide: const BorderSide(color: Color(0xFFE5E7EB), width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SaabiRadius.xl),
+          borderSide: const BorderSide(color: Color(0xFFE5E7EB), width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(SaabiRadius.xl),
+          borderSide: const BorderSide(color: SaabiColors.primary, width: 1.5),
+        ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: SaabiSpacing.md,
           vertical: SaabiSpacing.md,
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(SaabiRadius.lg),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(SaabiRadius.lg),
-          borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(SaabiRadius.lg),
-          borderSide: const BorderSide(color: SaabiColors.primary, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(SaabiRadius.lg),
-          borderSide: const BorderSide(color: SaabiColors.error),
+        hintStyle: const TextStyle(
+          fontFamily: 'Nunito',
+          color: SaabiColors.textHint,
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
         ),
       ),
-      dividerTheme: const DividerThemeData(color: Color(0xFFE5E7EB), thickness: 1),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: SaabiColors.surface,
+        selectedItemColor: SaabiColors.primary,
+        unselectedItemColor: SaabiColors.textHint,
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        elevation: 12,
+        selectedLabelStyle: TextStyle(
+          fontFamily: 'Nunito',
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: 'Nunito',
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return SaabiColors.green;
+          return Colors.transparent;
+        }),
+        checkColor: WidgetStateProperty.all(Colors.white),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        side: const BorderSide(color: Color(0xFFD1D5DB), width: 1.5),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: SaabiColors.primary,
+        linearTrackColor: Color(0xFFE5E7EB),
+      ),
     );
   }
+
+  static const TextTheme _textTheme = TextTheme(
+    displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w800, color: SaabiColors.textPrimary, height: 1.2),
+    displayMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: SaabiColors.textPrimary, height: 1.25),
+    headlineLarge: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: SaabiColors.textPrimary, height: 1.3),
+    headlineMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: SaabiColors.textPrimary, height: 1.3),
+    headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: SaabiColors.textPrimary, height: 1.4),
+    titleLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: SaabiColors.textPrimary),
+    titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: SaabiColors.textPrimary),
+    titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: SaabiColors.textSecondary),
+    bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: SaabiColors.textPrimary, height: 1.6),
+    bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: SaabiColors.textPrimary, height: 1.6),
+    bodySmall: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: SaabiColors.textSecondary, height: 1.5),
+    labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: SaabiColors.textPrimary),
+    labelSmall: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: SaabiColors.textSecondary, letterSpacing: 0.8),
+  );
 }
